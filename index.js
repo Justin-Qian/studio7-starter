@@ -42,6 +42,26 @@ globalThis.addEventListener("beforeunload", () => {
 	localStorage.tasks = JSON.stringify(getData());
 });
 
+globalThis.addEventListener("change", e => {
+	if (e.target.matches(".done")) {
+		updateDoneCount();
+	}
+}
+);
+
+dom.tasksList.addEventListener("click", e => {
+	if (e.target.matches(".delete")) {
+		let element = e.target.closest("li");
+		let prev = element.previousElementSibling;
+		let next = element.nextElementSibling;
+		element.remove();
+		updateDoneCount();
+		updateCounts();
+		focusTask (prev ?? next);
+	}
+}
+);
+
 /**
  * Add a new item at the end of the todo list
  * @param {Object} data data for the item to be added
@@ -59,6 +79,7 @@ export function addItem (data = { done: false, title: "" }) {
 	updateCounts();
 	focusTask(element);
 }
+
 
 /**
  * Delete all tasks that are marked as done
